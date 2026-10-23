@@ -1,11 +1,10 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#090817">
-  <title>FlappyVision — Neon Arcade</title>
+  <title>FlappyVision — Multiverse Arcade</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -39,13 +38,13 @@
     <!-- START SCREEN -->
     <section id="start-screen" class="screen start-screen">
       <div class="hero-copy">
-        <div class="eyebrow"><span class="live-dot"></span> THE NEON ARCADE</div>
+        <div class="eyebrow"><span class="live-dot"></span> MULTIVERSE ARCADE</div>
 
         <h1 class="hero-title">
           FLAPPY<span>VISION</span>
         </h1>
 
-        <p class="hero-subtitle">FLY. COLLECT. SURVIVE.</p>
+        <p class="hero-subtitle">FLY THROUGH 5 MAGICAL WORLDS</p>
 
         <div class="hero-bird-stage">
           <div class="orbit orbit-one"></div>
@@ -65,11 +64,17 @@
           <span class="floating-star star-two">✧</span>
         </div>
 
-        <button id="start-btn" class="primary-button">
-          <span class="button-icon">▶</span>
-          <span>LET'S PLAY</span>
-          <span class="button-arrow">↗</span>
-        </button>
+        <div class="button-group">
+          <button id="start-btn" class="primary-button">
+            <span class="button-icon">▶</span>
+            <span>LET'S PLAY</span>
+            <span class="button-arrow">↗</span>
+          </button>
+          
+          <button id="select-bird-menu-btn" class="secondary-button custom-select-btn">
+            <span>🐦</span> SELECT BIRD
+          </button>
+        </div>
 
         <div class="control-hint">
           <span class="hand-icon">✌</span>
@@ -88,6 +93,29 @@
       </div>
     </section>
 
+    <!-- SELECT BIRD SCREEN -->
+    <section id="select-bird-screen" class="screen select-bird-screen hidden">
+      <div class="select-bird-header">
+        <div class="select-bird-logo">
+          <span class="logo-bird-silhouette">🦅</span>
+          <h1 class="select-bird-title">SELECT BIRD</h1>
+        </div>
+      </div>
+
+      <div class="bird-grid-container">
+        <div id="bird-grid" class="bird-grid"></div>
+      </div>
+
+      <div class="select-bird-nav">
+        <button id="bird-select-back-btn" class="select-nav-btn back-btn">
+          <span>◀</span> BACK
+        </button>
+        <button id="bird-select-next-btn" class="select-nav-btn next-btn">
+          NEXT <span>▶</span>
+        </button>
+      </div>
+    </section>
+
     <!-- GAME SCREEN -->
     <section id="game-screen" class="screen game-screen hidden">
       <div class="game-topline">
@@ -95,7 +123,7 @@
 
         <div class="game-title">
           <span class="mini-diamond">◆</span>
-          FLAPPY<span>VISION</span>
+          <span id="current-world-badge" class="world-badge">GALAXY WORLD</span>
         </div>
 
         <div class="game-top-right">
@@ -117,9 +145,15 @@
               <strong><span class="coin-symbol">¢</span> <span id="coin-count">0</span></strong>
             </div>
 
-            <div class="hud-card best-card">
-              <span class="hud-label">BEST</span>
-              <strong id="game-best">0</strong>
+            <div class="hud-card goal-card">
+              <div class="goal-header">
+                <span class="hud-label">GIFT GOAL 🎁</span>
+                <span id="goal-target-text" class="goal-target">0 / 10</span>
+              </div>
+              <div class="goal-progress-bar">
+                <div id="goal-progress-fill" class="goal-progress-fill"></div>
+              </div>
+              <small id="goal-hint" class="goal-hint">10 points to unlock!</small>
             </div>
           </div>
 
@@ -139,11 +173,22 @@
 
             <div id="countdown" class="countdown hidden">3</div>
 
+            <!-- GAMEOVER OVERLAY -->
             <div id="gameover-overlay" class="game-overlay gameover-overlay hidden">
-              <div class="gameover-burst">✦</div>
-              <div class="overlay-kicker">FLIGHT COMPLETE</div>
-              <h2>GAME <span>OVER</span></h2>
-              <p id="best-score-text">Every flight makes you better.</p>
+              <div id="gift-reward-box" class="gift-reward-box hidden">
+                <div class="gift-glow-effect"></div>
+                <div class="gift-box-icon">🎁</div>
+                <div id="gift-encouragement" class="gift-encouragement">GREAT JOB! 🏆</div>
+                <h3 id="gift-title-text" class="gift-title">YOU EARNED A GIFT!</h3>
+                <p id="gift-desc-text" class="gift-desc">You scored 20 points and unlocked a special reward!</p>
+              </div>
+
+              <div id="gameover-standard-header" class="standard-header">
+                <div class="gameover-burst">✦</div>
+                <div class="overlay-kicker">FLIGHT COMPLETE</div>
+                <h2>GAME <span>OVER</span></h2>
+                <p id="best-score-text">Every flight makes you better.</p>
+              </div>
 
               <div class="results-row">
                 <div class="result-box">
@@ -167,12 +212,13 @@
             </div>
 
             <div id="floating-score" class="floating-score hidden">+1</div>
+            <div id="milestone-banner" class="milestone-banner hidden">AMAZING!</div>
           </div>
 
           <div class="game-bottomline">
             <span><i class="legend-dot cyan"></i> AVOID THE PIPES</span>
             <span><i class="legend-dot gold"></i> COLLECT COINS</span>
-            <span class="bottom-version">ARCADE EDITION · 2026</span>
+            <span class="bottom-version">MULTIVERSE EDITION · 2026</span>
           </div>
         </div>
 
@@ -228,10 +274,10 @@
             </div>
 
             <div class="control-item">
-              <div class="control-symbol avoid-symbol">↗</div>
+              <div class="control-symbol avoid-symbol">🪐</div>
               <div>
-                <strong>DODGE THE PIPES</strong>
-                <p>Stay airborne. Don't touch anything!</p>
+                <strong>5 MULTIVERSE WORLDS</strong>
+                <p>Worlds shift every 20 points with new challenges!</p>
               </div>
             </div>
 
