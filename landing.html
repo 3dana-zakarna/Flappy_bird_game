@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IEEE RAS - AAUP | Multiverse Arcade</title>
+  
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body, html {
+      width: 100%;
+      height: 100%;
+      background-color: #050510;
+      overflow: hidden;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    /* حاوية الصورة الخلفية لتملأ الشاشة بالكامل بدون فراغات */
+    .landing-container {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      background-image: url('cover.png'); /* تأكد أن اسم صورتك في المجلد هو cover.png */
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      transition: opacity 0.4s ease;
+    }
+
+    /* زر PLAY الشفاف والمطابق تماماً لمكان الزر في الصورة */
+    .play-button-overlay {
+      position: absolute;
+      bottom: 6.5%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 310px;  
+      height: 75px; 
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      outline: none;
+      border-radius: 50px;
+    }
+
+    /* شاشة التحميل الزرقاء الساحرة (تكون مخفية بالبداية) */
+    .loading-screen {
+      position: fixed;
+      inset: 0;
+      /* خلفية زرقاء نيون غامقة متدرجة بتأثير كوني */
+      background: radial-gradient(circle at 50% 50%, #0d1b3e 0%, #050b1a 60%, #02050e 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+    }
+
+    .loading-screen.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* تصميم الروبوت الكيوت المتحرك */
+    .cute-robot {
+      font-size: 85px;
+      margin-bottom: 20px;
+      animation: robotBounce 1.5s ease-in-out infinite;
+      filter: drop-shadow(0 0 25px rgba(99, 245, 255, 0.8));
+    }
+
+    @keyframes robotBounce {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-15px) scale(1.05); }
+    }
+
+    /* نص التحميل والنسبة المئوية باللون الأزرق النيون */
+    .loading-title {
+      font-family: 'Orbitron', sans-serif;
+      color: #63f5ff;
+      font-size: 20px;
+      letter-spacing: 4px;
+      margin-bottom: 15px;
+      text-shadow: 0 0 15px rgba(99, 245, 255, 0.7);
+    }
+
+    .loading-percentage {
+      color: #ffffff;
+      font-size: 26px;
+      font-weight: bold;
+      margin-bottom: 25px;
+      text-shadow: 0 0 10px rgba(154, 101, 255, 0.8);
+    }
+
+    /* شريط التحميل الأزرق المتألق (Progress Bar) */
+    .progress-bar-container {
+      width: 320px;
+      height: 10px;
+      background: rgba(99, 245, 255, 0.1);
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(99, 245, 255, 0.4);
+      box-shadow: 0 0 20px rgba(99, 245, 255, 0.3);
+    }
+
+    .progress-bar-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, #00d8ff, #63f5ff, #9a65ff);
+      border-radius: 10px;
+      transition: width 0.15s linear;
+      box-shadow: 0 0 12px #63f5ff;
+    }
+
+    /* تأثير الاختفاء العام عند الانتقال للعبة */
+    body.fade-out {
+      opacity: 0;
+    }
+  </style>
+  <!-- استيراد خط أنيق للعناوين -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- واجهة الصورة الرئيسية -->
+  <div class="landing-container" id="landingContainer">
+    <button class="play-button-overlay" onclick="startLoadingProcess()"></button>
+  </div>
+
+  <!-- شاشة التحميل الزرقاء مع الروبوت الكيوت -->
+  <div class="loading-screen" id="loadingScreen">
+    <div class="cute-robot">🤖</div>
+    <div class="loading-title">LOADING MULTIVERSE...</div>
+    <div class="loading-percentage" id="loadingPercentage">0%</div>
+    
+    <div class="progress-bar-container">
+      <div class="progress-bar-fill" id="progressBarFill"></div>
+    </div>
+  </div>
+
+  <script>
+    function startLoadingProcess() {
+      // 1. إظهار شاشة التحميل الزرقاء
+      const loadingScreen = document.getElementById('loadingScreen');
+      const landingContainer = document.getElementById('landingContainer');
+      const percentageText = document.getElementById('loadingPercentage');
+      const progressBarFill = document.getElementById('progressBarFill');
+
+      landingContainer.style.opacity = '0';
+      loadingScreen.classList.add('active');
+
+      let currentProgress = 0;
+      
+      // 2. جعل التحميل أبطأ وأكثر سلاسة (زيادة تدريجية ناعمة)
+      const loadingInterval = setInterval(function() {
+        // زيادة بنسب صغيرة (بين 2 إلى 5 في كل خطوة)
+        currentProgress += Math.floor(Math.random() * 4) + 2;
+        
+        if (currentProgress >= 100) {
+          currentProgress = 100;
+          clearInterval(loadingInterval);
+          
+          // 3. الانتظار قليلاً عند 100% ثم الانتقال لصفحة اللعبة
+          setTimeout(function() {
+            document.body.classList.add('fade-out');
+            setTimeout(function() {
+              window.location.href = 'index.html';
+            }, 500);
+          }, 400);
+        }
+
+        // تحديث الرقم وشريط التقدم
+        percentageText.textContent = currentProgress + '%';
+        progressBarFill.style.width = currentProgress + '%';
+      }, 130); // تم إبطاء السرعة عبر زيادة التوقيت بين الخطوات
+    }
+  </script>
+
+</body>
+</html>
