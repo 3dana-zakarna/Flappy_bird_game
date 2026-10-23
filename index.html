@@ -1,0 +1,262 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090817">
+  <title>FlappyVision — Neon Arcade</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="ambient ambient-one"></div>
+  <div class="ambient ambient-two"></div>
+  <div class="stars-layer"></div>
+
+  <header class="topbar">
+    <a href="#" id="brand-home" class="brand">
+      <span class="brand-mark">✦</span>
+      <span>FLAPPY<span class="brand-accent">VISION</span></span>
+    </a>
+
+    <div class="top-actions">
+      <div class="best-pill">
+        <span>🏆</span>
+        <span>BEST <b id="best-score">0</b></span>
+      </div>
+      <button id="sound-btn" class="icon-button" aria-label="Toggle sound" aria-pressed="true">
+        <span id="sound-icon">♫</span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- START SCREEN -->
+    <section id="start-screen" class="screen start-screen">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="live-dot"></span> THE NEON ARCADE</div>
+
+        <h1 class="hero-title">
+          FLAPPY<span>VISION</span>
+        </h1>
+
+        <p class="hero-subtitle">FLY. COLLECT. SURVIVE.</p>
+
+        <div class="hero-bird-stage">
+          <div class="orbit orbit-one"></div>
+          <div class="orbit orbit-two"></div>
+          <div class="bird-aura"></div>
+
+          <div class="hero-bird">
+            <span class="bird-wing"></span>
+            <span class="bird-eye"></span>
+            <span class="bird-beak"></span>
+            <span class="bird-cheek"></span>
+          </div>
+
+          <span class="floating-coin coin-one">¢</span>
+          <span class="floating-coin coin-two">¢</span>
+          <span class="floating-star star-one">✦</span>
+          <span class="floating-star star-two">✧</span>
+        </div>
+
+        <button id="start-btn" class="primary-button">
+          <span class="button-icon">▶</span>
+          <span>LET'S PLAY</span>
+          <span class="button-arrow">↗</span>
+        </button>
+
+        <div class="control-hint">
+          <span class="hand-icon">✌</span>
+          <span>PINCH YOUR FINGERS TO FLY</span>
+        </div>
+
+        <div class="keyboard-hint">
+          OR PRESS <kbd>SPACE</kbd> TO PLAY
+        </div>
+      </div>
+
+      <div class="start-footer">
+        <span>NEON ARCADE</span>
+        <span class="footer-line"></span>
+        <span>READY PLAYER ONE?</span>
+      </div>
+    </section>
+
+    <!-- GAME SCREEN -->
+    <section id="game-screen" class="screen game-screen hidden">
+      <div class="game-topline">
+        <button id="home-btn" class="small-icon-button" aria-label="Home">⌂</button>
+
+        <div class="game-title">
+          <span class="mini-diamond">◆</span>
+          FLAPPY<span>VISION</span>
+        </div>
+
+        <div class="game-top-right">
+          <span class="game-live-dot"></span>
+          <span>LIVE</span>
+        </div>
+      </div>
+
+      <div class="game-layout">
+        <div class="arcade-column">
+          <div class="game-hud">
+            <div class="hud-card score-card">
+              <span class="hud-label">SCORE</span>
+              <strong id="score">0</strong>
+            </div>
+
+            <div class="hud-card coin-card">
+              <span class="hud-label">COINS</span>
+              <strong><span class="coin-symbol">¢</span> <span id="coin-count">0</span></strong>
+            </div>
+
+            <div class="hud-card best-card">
+              <span class="hud-label">BEST</span>
+              <strong id="game-best">0</strong>
+            </div>
+          </div>
+
+          <div class="canvas-shell">
+            <canvas id="game-canvas" width="900" height="720" aria-label="FlappyVision game"></canvas>
+
+            <div id="ready-overlay" class="game-overlay ready-overlay">
+              <div class="overlay-kicker">YOUR ADVENTURE STARTS HERE</div>
+              <div class="overlay-bird">🐤</div>
+              <h2>READY TO FLY?</h2>
+              <p>Pinch your thumb and index finger.</p>
+              <button id="play-btn" class="primary-button compact-button">
+                <span>START FLIGHT</span><span>→</span>
+              </button>
+              <div class="overlay-key">OR PRESS SPACE</div>
+            </div>
+
+            <div id="countdown" class="countdown hidden">3</div>
+
+            <div id="gameover-overlay" class="game-overlay gameover-overlay hidden">
+              <div class="gameover-burst">✦</div>
+              <div class="overlay-kicker">FLIGHT COMPLETE</div>
+              <h2>GAME <span>OVER</span></h2>
+              <p id="best-score-text">Every flight makes you better.</p>
+
+              <div class="results-row">
+                <div class="result-box">
+                  <span>YOUR SCORE</span>
+                  <strong id="final-score">0</strong>
+                </div>
+                <div class="result-box gold-result">
+                  <span>COINS</span>
+                  <strong>¢ <b id="final-coins">0</b></strong>
+                </div>
+                <div class="result-box">
+                  <span>PERSONAL BEST</span>
+                  <strong id="final-best">0</strong>
+                </div>
+              </div>
+
+              <button id="restart-btn" class="primary-button compact-button">
+                <span>↻</span><span>PLAY AGAIN</span>
+              </button>
+              <button id="gameover-home-btn" class="secondary-button">BACK HOME</button>
+            </div>
+
+            <div id="floating-score" class="floating-score hidden">+1</div>
+          </div>
+
+          <div class="game-bottomline">
+            <span><i class="legend-dot cyan"></i> AVOID THE PIPES</span>
+            <span><i class="legend-dot gold"></i> COLLECT COINS</span>
+            <span class="bottom-version">ARCADE EDITION · 2026</span>
+          </div>
+        </div>
+
+        <aside class="side-panel">
+          <div class="camera-card">
+            <div class="panel-heading">
+              <span class="panel-heading-icon">◎</span>
+              <span>HAND TRACKING</span>
+              <span class="tracking-live">● LIVE</span>
+            </div>
+
+            <div class="camera-view">
+              <video id="camera-video" autoplay playsinline muted></video>
+              <canvas id="hand-canvas" width="640" height="480"></canvas>
+
+              <div id="camera-placeholder" class="camera-placeholder">
+                <div class="camera-icon">◎</div>
+                <span>CAMERA PREVIEW</span>
+                <small>Show your hand to begin</small>
+              </div>
+              <div class="camera-corner corner-tl"></div>
+              <div class="camera-corner corner-tr"></div>
+              <div class="camera-corner corner-bl"></div>
+              <div class="camera-corner corner-br"></div>
+            </div>
+
+            <div class="tracking-status">
+              <span id="tracking-dot" class="tracking-dot"></span>
+              <span id="tracking-text">Camera not started</span>
+            </div>
+          </div>
+
+          <div class="controls-card">
+            <div class="panel-heading">
+              <span class="panel-heading-icon">✧</span>
+              <span>HOW TO PLAY</span>
+            </div>
+
+            <div class="control-item">
+              <div class="control-symbol pinch-symbol">✌</div>
+              <div>
+                <strong>PINCH TO FLAP</strong>
+                <p>Bring thumb and index finger together.</p>
+              </div>
+            </div>
+
+            <div class="control-item">
+              <div class="control-symbol coin-control">¢</div>
+              <div>
+                <strong>GRAB THE GOLD</strong>
+                <p>Collect coins while flying through gaps.</p>
+              </div>
+            </div>
+
+            <div class="control-item">
+              <div class="control-symbol avoid-symbol">↗</div>
+              <div>
+                <strong>DODGE THE PIPES</strong>
+                <p>Stay airborne. Don't touch anything!</p>
+              </div>
+            </div>
+
+            <div class="keyboard-tip">
+              KEYBOARD BACKUP <kbd>SPACE</kbd>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <div id="message-box" class="toast hidden" role="status">
+    <span id="message-icon">!</span>
+    <span id="message-text"></span>
+    <button id="message-close" aria-label="Close message">×</button>
+  </div>
+
+  <footer class="site-footer">
+    <span>FLAPPYVISION</span>
+    <span>MADE TO PLAY · BUILT TO FLY</span>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="game.js"></script>
+</body>
+</html>
